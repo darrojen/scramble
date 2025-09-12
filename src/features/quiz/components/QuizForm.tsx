@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useContext, useState, ChangeEvent } from 'react';
@@ -7,6 +6,13 @@ import { Play, AlertCircle, RefreshCw, Plus, Minus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import questionsPool from '@/lib/questions';
 import { QuizContext } from '@/features/quiz/context/QuizContext';
+
+// shadcn/ui
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const scienceSubjects = [
   'english',
@@ -55,6 +61,7 @@ export default function QuizForm({ route, examType }: QuizFormProps) {
     generateQuestions,
     resetQuiz,
   } = useContext(QuizContext);
+
   const router = useRouter();
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
@@ -76,71 +83,58 @@ export default function QuizForm({ route, examType }: QuizFormProps) {
       : Infinity;
 
   const handleSubjectChange = (sub: string, checked: boolean) => {
-    if (examType === 'JAMB' && sub === 'english' && !checked) {
-      setError('English is compulsory for JAMB.');
+    if (['JAMB', 'WAEC', 'NECO'].includes(examType) && sub === 'english' && !checked) {
+      setError(`${examType} requires English.`);
       return;
     }
-    if (examType === 'WAEC' && sub === 'english' && !checked) {
-      setError('English is compulsory for WAEC.');
+    if (['WAEC', 'NECO'].includes(examType) && sub === 'math' && !checked) {
+      setError(`${examType} requires Mathematics.`);
       return;
     }
-    if (examType === 'NECO' && sub === 'english' && !checked) {
-      setError('English is compulsory for NECO.');
-      return;
-    }
-    if (examType === 'WAEC' && sub === 'math' && !checked) {
-      setError('Mathematics is compulsory for WAEC.');
-      return;
-    }
-    if (examType === 'NECO' && sub === 'math' && !checked) {
-      setError('Mathematics is compulsory for NECO.');
-      return;
-    }
+
     const newSubjects = checked
       ? [...selectedSubjects, sub]
-      : selectedSubjects.filter(s => s !== sub);
+      : selectedSubjects.filter((s) => s !== sub);
+
     if (checked && newSubjects.length > maxSubjects) {
       setError(`Maximum ${maxSubjects} subjects allowed for ${examType}.`);
       return;
     }
+
     setSelectedSubjects(newSubjects);
-    setQuestionsPerSubject(prevCounts => {
-      const newCounts = { ...prevCounts };
+    setQuestionsPerSubject((prev) => {
+      const updated = { ...prev };
       if (!checked) {
-        delete newCounts[sub];
-      } else if (!(sub in newCounts)) {
-        newCounts[sub] = 1;
+        delete updated[sub];
+      } else if (!(sub in updated)) {
+        updated[sub] = 1;
       }
-      return newCounts;
+      return updated;
     });
     setError('');
   };
 
-  const handleQuestionCountChange = (
-    sub: string,
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleQuestionCountChange = (sub: string, e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const num = value === '' ? 0 : parseInt(value, 10);
-    const maxQuestions = questionsPool[sub]?.length || 10;
-    if (value === '' || (!isNaN(num) && num >= 0 && num <= maxQuestions)) {
-      setQuestionsPerSubject(prev => ({ ...prev, [sub]: num }));
+    const max = questionsPool[sub]?.length || 10;
+
+    if (value === '' || (!isNaN(num) && num >= 0 && num <= max)) {
+      setQuestionsPerSubject((prev) => ({ ...prev, [sub]: num }));
       setError('');
-    } else if (!isNaN(num) && num > maxQuestions) {
-      setError(
-        `Only ${maxQuestions} questions available for ${sub.replace('_', ' ')}.`
-      );
+    } else if (!isNaN(num) && num > max) {
+      setError(`Only ${max} questions available for ${sub.replace('_', ' ')}.`);
     }
   };
 
   const handleQuestionCountAdjust = (sub: string, increment: boolean) => {
-    const maxQuestions = questionsPool[sub]?.length || 10;
-    setQuestionsPerSubject(prev => {
+    const max = questionsPool[sub]?.length || 10;
+    setQuestionsPerSubject((prev) => {
       const current = prev[sub] || 1;
-      const newCount = increment
-        ? Math.min(current + 1, maxQuestions)
+      const next = increment
+        ? Math.min(current + 1, max)
         : Math.max(current - 1, 1);
-      return { ...prev, [sub]: newCount };
+      return { ...prev, [sub]: next };
     });
     setError('');
   };
@@ -167,54 +161,27 @@ export default function QuizForm({ route, examType }: QuizFormProps) {
       (parseInt(minutes) || 0) * 60 +
       (parseInt(seconds) || 0);
     const hasQuestions = selectedSubjects.every(
-      sub => (questionsPerSubject[sub] || 0) > 0
+      (sub) => (questionsPerSubject[sub] || 0) > 0
     );
     const withinLimits = selectedSubjects.every(
-      sub =>
-        (questionsPerSubject[sub] || 0) <= (questionsPool[sub]?.length || 10)
+      (sub) => (questionsPerSubject[sub] || 0) <= (questionsPool[sub]?.length || 10)
     );
-    return (
-      selectedSubjects.length > 0 &&
-      timeInSec > 0 &&
-      hasQuestions &&
-      withinLimits
-    );
+    return selectedSubjects.length > 0 && timeInSec > 0 && hasQuestions && withinLimits;
   };
 
   const handleStart = () => {
     setError('');
-    if (selectedSubjects.length === 0) {
-      setError('Please select at least one subject.');
-      return;
-    }
-    if (examType === 'JAMB' && !selectedSubjects.includes('english')) {
-      setError('English is compulsory for JAMB.');
-      return;
-    }
-    if (!selectedSubjects.every(sub => (questionsPerSubject[sub] || 0) > 0)) {
-      setError('Number of questions cannot be zero for any subject.');
-      return;
-    }
-    if (
-      !selectedSubjects.every(
-        sub =>
-          (questionsPerSubject[sub] || 0) <= (questionsPool[sub]?.length || 10)
-      )
-    ) {
-      setError('One or more subjects have too many questions selected.');
+    if (!isFormValid()) {
+      setError('Please complete all required fields correctly.');
       return;
     }
     const timeInSec =
       (parseInt(hours) || 0) * 3600 +
       (parseInt(minutes) || 0) * 60 +
       (parseInt(seconds) || 0);
-    if (timeInSec === 0) {
-      setError('Please set a valid time (at least 1 second).');
-      return;
-    }
     setTotalTime(timeInSec);
     generateQuestions();
-    router.push('/quiz/home');
+    router.push('/main/quiz/home');
   };
 
   const handleReset = () => {
@@ -227,189 +194,162 @@ export default function QuizForm({ route, examType }: QuizFormProps) {
 
   return (
     <form
-      onSubmit={e => e.preventDefault()}
-      className="space-y-8 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto"
+      onSubmit={(e) => e.preventDefault()}
+      className="space-y-8 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8"
     >
       {error && (
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center text-red-500 dark:text-red-400 text-sm sm:text-base"
+          className="flex items-center text-sm"
         >
-          <AlertCircle className="mr-2" size={18} />
+          <AlertCircle className="mr-2 h-4 w-4" />
           {error}
-        </motion.p>
+        </motion.div>
       )}
 
       {/* Subjects */}
-      <div>
-        <label className="block text-lg sm:text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-          Select Subjects
-        </label>
-        <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Select Subjects</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-8">
           {route !== 'arts' && (
             <div>
-              <h3 className="text-md sm:text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
-                Science Subjects
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {scienceSubjects.map(sub => (
-                  <motion.label
+              <h3 className="font-medium mb-3">Science Subjects</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                {scienceSubjects.map((sub) => (
+                  <motion.div
                     key={sub}
                     whileHover={{ scale: 1.02 }}
                     className="flex items-center space-x-2"
                   >
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={selectedSubjects.includes(sub)}
-                      onChange={e => handleSubjectChange(sub, e.target.checked)}
-                      className="form-checkbox h-5 w-5 text-blue-600 dark:text-blue-400 rounded focus:ring-blue-500"
+                      onCheckedChange={(checked) => handleSubjectChange(sub, Boolean(checked))}
+                      id={sub}
                     />
-                    <span className="capitalize text-sm sm:text-base text-gray-800 dark:text-gray-200">
+                    <Label htmlFor={sub} className="capitalize">
                       {sub.replace('_', ' ')}
-                    </span>
-                  </motion.label>
+                    </Label>
+                  </motion.div>
                 ))}
               </div>
             </div>
           )}
           {route !== 'science' && (
             <div>
-              <h3 className="text-md sm:text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
-                Arts/Commercial/Languages
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {artsSubjects.map(sub => (
-                  <motion.label
+              <h3 className="font-medium mb-3">Arts/Commercial/Languages</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                {artsSubjects.map((sub) => (
+                  <motion.div
                     key={sub}
                     whileHover={{ scale: 1.02 }}
                     className="flex items-center space-x-2"
                   >
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={selectedSubjects.includes(sub)}
-                      onChange={e => handleSubjectChange(sub, e.target.checked)}
-                      className="form-checkbox h-5 w-5 text-blue-600 dark:text-blue-400 rounded focus:ring-blue-500"
+                      onCheckedChange={(checked) => handleSubjectChange(sub, Boolean(checked))}
+                      id={sub}
                     />
-                    <span className="capitalize text-sm sm:text-base text-gray-800 dark:text-gray-200">
+                    <Label htmlFor={sub} className="capitalize">
                       {sub.replace('_', ' ')}
-                    </span>
-                  </motion.label>
+                    </Label>
+                  </motion.div>
                 ))}
               </div>
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Questions per subject */}
       {selectedSubjects.length > 0 && (
-        <div>
-          <label className="block text-lg sm:text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Number of Questions
-          </label>
-          <div className="space-y-4">
-            {selectedSubjects.map(sub => (
-              <div
-                key={sub}
-                className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0"
-              >
-                <span className="capitalize text-gray-800 dark:text-gray-200 text-sm sm:text-base sm:w-40">
-                  {sub.replace('_', ' ')}
-                </span>
-                <div className="flex items-center space-x-2">
-                  <motion.button
+        <Card>
+          <CardHeader>
+            <CardTitle>Number of Questions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              {selectedSubjects.map((sub) => (
+                <div key={sub} className="flex flex-wrap items-center gap-2">
+                  <span className="capitalize w-28">{sub.replace('_', ' ')}</span>
+                  <Button
                     type="button"
+                    size="icon"
+                    variant="outline"
                     onClick={() => handleQuestionCountAdjust(sub, false)}
                     disabled={questionsPerSubject[sub] <= 1}
-                    className="p-2 bg-gray-200 dark:bg-gray-700 rounded-l-lg disabled:opacity-50"
                   >
-                    <Minus size={16} className="text-gray-800 dark:text-gray-200" />
-                  </motion.button>
-                  <motion.input
-                    whileFocus={{ scale: 1.02 }}
+                    <Minus size={16} />
+                  </Button>
+                  <Input
                     type="number"
                     min={0}
                     max={questionsPool[sub]?.length || 10}
                     value={questionsPerSubject[sub] || 0}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleQuestionCountChange(sub, e)
-                    }
-                    className="w-20 p-2 text-center border-t border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm sm:text-base"
+                    onChange={(e) => handleQuestionCountChange(sub, e)}
+                    className="w-20 text-center"
                   />
-                  <motion.button
+                  <Button
                     type="button"
+                    size="icon"
+                    variant="outline"
                     onClick={() => handleQuestionCountAdjust(sub, true)}
-                    disabled={
-                      questionsPerSubject[sub] >=
-                      (questionsPool[sub]?.length || 10)
-                    }
-                    className="p-2 bg-gray-200 dark:bg-gray-700 rounded-r-lg disabled:opacity-50"
+                    disabled={questionsPerSubject[sub] >= (questionsPool[sub]?.length || 10)}
                   >
-                    <Plus size={16} className="text-gray-800 dark:text-gray-200" />
-                  </motion.button>
+                    <Plus size={16} />
+                  </Button>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Time limit */}
-      <div>
-        <label className="block text-lg sm:text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-          Time Limit
-        </label>
-        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
-          <motion.input
-            whileFocus={{ scale: 1.02 }}
-            type="number"
-            placeholder="Hours"
-            value={hours}
-            onChange={e => handleNumberInput(e.target.value, setHours, 0)}
-            className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm sm:text-base"
-          />
-          <motion.input
-            whileFocus={{ scale: 1.02 }}
-            type="number"
-            placeholder="Minutes"
-            value={minutes}
-            onChange={e => handleNumberInput(e.target.value, setMinutes, 0, 59)}
-            className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm sm:text-base"
-          />
-          <motion.input
-            whileFocus={{ scale: 1.02 }}
-            type="number"
-            placeholder="Seconds"
-            value={seconds}
-            onChange={e => handleNumberInput(e.target.value, setSeconds, 0, 59)}
-            className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm sm:text-base"
-          />
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Time Limit</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Input
+              type="number"
+              placeholder="Hours"
+              value={hours}
+              onChange={(e) => handleNumberInput(e.target.value, setHours, 0)}
+            />
+            <Input
+              type="number"
+              placeholder="Minutes"
+              value={minutes}
+              onChange={(e) => handleNumberInput(e.target.value, setMinutes, 0, 59)}
+            />
+            <Input
+              type="number"
+              placeholder="Seconds"
+              value={seconds}
+              onChange={(e) => handleNumberInput(e.target.value, setSeconds, 0, 59)}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Buttons */}
-      <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Button
           type="button"
           onClick={handleStart}
           disabled={!isFormValid()}
-          className="flex-1 flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 sm:py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 transition text-sm sm:text-base"
+          className="flex-1"
         >
-          <Play className="mr-2" size={16} /> Start Quiz
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          type="button"
-          onClick={handleReset}
-          className="flex-1 flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-3 sm:py-4 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm sm:text-base"
-        >
-          <RefreshCw className="mr-2" size={16} /> Reset
-        </motion.button>
+          <Play className="mr-2 h-4 w-4" /> Start Quiz
+        </Button>
+        <Button type="button" onClick={handleReset} variant="outline" className="flex-1">
+          <RefreshCw className="mr-2 h-4 w-4" /> Reset
+        </Button>
       </div>
     </form>
   );

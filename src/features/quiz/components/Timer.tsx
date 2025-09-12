@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Clock } from 'lucide-react';
 
 interface TimerProps {
   totalSeconds: number;
@@ -29,9 +30,11 @@ export default function Timer({ totalSeconds, onTimeUp }: TimerProps) {
 
   return (
     <motion.span
+    className='flex'
       animate={{ color: timeLeft < 60 ? '#ef4444' : '#3b82f6' }}
       transition={{ duration: 0.5 }}
     >
+      <Clock className="mr-2" />
       {formatTime(timeLeft)}
     </motion.span>
   );

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import QuizForm from '@/features/quiz/components/QuizForm';
-import { ModeToggle } from '@/app/theme/page';
 
 
 
@@ -12,7 +11,7 @@ export const QuizModule = () => {
   const [selectedExamType, setSelectedExamType] = useState('');
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -20,7 +19,7 @@ export const QuizModule = () => {
         transition={{ duration: 0.5 }}
         className="card max-w-3xl w-full p-8"
       >
-        <h1 className="text-3xl font-bold mb-6 text-center gradient-bg text-transparent bg-clip-text">Quiz Master</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text">Quiz Master</h1>
         {!selectedRoute ? (
           <div className="space-y-4">
             <label className="block text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">

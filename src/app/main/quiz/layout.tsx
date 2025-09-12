@@ -1,7 +1,7 @@
 'use client';
 
 import { MotionConfig } from 'framer-motion';
-import '../globals.css';
+import '../../globals.css';
 import { QuizProvider } from '@/features/quiz/context/QuizContext';
 
 export default function RootLayout({
@@ -10,8 +10,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body suppressHydrationWarning={true}>
+    <html lang="en" className="">
+      <body >
         <QuizProvider>
           <MotionConfig reducedMotion="user">{children}</MotionConfig>
         </QuizProvider>

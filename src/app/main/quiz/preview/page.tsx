@@ -91,7 +91,7 @@ export default function Preview() {
   const handleGoHome = () => {
     localStorage.removeItem('userAnswers');
     setUserAnswers({});
-    router.push('/');
+    router.push('/main/dashboard');
   };
 
   const variants = {

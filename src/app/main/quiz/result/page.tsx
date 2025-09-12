@@ -35,7 +35,7 @@ export default function Result() {
   }, [calculateScores]);
 
   if (loading || !score) {
-    return <LoadingSpinner message="Preparing your results..." />;
+    return <LoadingSpinner message="" />;
   }
 
   return (
@@ -54,7 +54,7 @@ export default function Result() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => router.push('/quiz/preview')}
+            onClick={() => router.push('/main/quiz/preview')}
             className="flex items-center justify-center w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
           >
             <FileText className="mr-2" />
@@ -63,7 +63,7 @@ export default function Result() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/main/dashboard')}
             className="flex items-center justify-center w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"
           >
             <Home className="mr-2" />

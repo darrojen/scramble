@@ -1,5 +1,9 @@
-import { Loader2 } from 'lucide-react';
+
+
+
+import '@/app/globals.css'
 import { motion } from 'framer-motion';
+// import './LoadingSpinner.css'; // Import the CSS file
 
 interface LoadingProps {
   message: string;
@@ -7,13 +11,23 @@ interface LoadingProps {
 
 export default function LoadingSpinner({ message }: LoadingProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex flex-col items-center"
+        className="flex-col gap-4 w-full flex items-center justify-center relative"
       >
-        <Loader2 className="animate-spin h-16 w-16 text-blue-500 mb-4" />
+        <div className="banter-loader">
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+        </div>
         <p className="text-lg font-medium">{message}</p>
       </motion.div>
     </div>
