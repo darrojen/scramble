@@ -85,7 +85,7 @@ function CelebrationWrapper({
 
       {/* ✅ Continue Button */}
       <motion.button
-        className="mt-12 px-12 py-4 bg-gradient-to-r from-green-500 to-green-700 text-white text-xl md:text-2xl font-semibold rounded-2xl shadow-[0_0_25px_rgba(34,197,94,0.6)] hover:scale-105 transition-all duration-300"
+        className="mt-12 px-12 py-4 cursor-pointer bg-gradient-to-r from-green-500 to-green-700 text-white text-xl md:text-2xl font-semibold rounded-2xl shadow-[0_0_25px_rgba(34,197,94,0.6)] hover:scale-105 transition-all duration-300"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.8 }}

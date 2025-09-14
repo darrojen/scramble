@@ -27,12 +27,12 @@ export default function HomePage() {
 
         <div className="flex gap-4 justify-center">
           <Link href="/auth/register">
-            <Button size="lg" className="rounded-2xl shadow-lg">
+            <Button size="lg" className="rounded-2xl cursor-pointer shadow-lg">
               Get Started
             </Button>
           </Link>
           <Link href="/auth/login">
-            <Button size="lg" variant="outline" className="rounded-2xl">
+            <Button size="lg" variant="outline" className="cursor-pointer rounded-2xl">
               Sign In
             </Button>
           </Link>

@@ -277,6 +277,7 @@ export default function QuizForm({ route, examType }: QuizFormProps) {
                   <span className="capitalize w-28">{sub.replace('_', ' ')}</span>
                   <Button
                     type="button"
+                    className='cursor-pointer'
                     size="icon"
                     variant="outline"
                     onClick={() => handleQuestionCountAdjust(sub, false)}
@@ -294,6 +295,7 @@ export default function QuizForm({ route, examType }: QuizFormProps) {
                   />
                   <Button
                     type="button"
+                    className='cursor-pointer'
                     size="icon"
                     variant="outline"
                     onClick={() => handleQuestionCountAdjust(sub, true)}
@@ -343,12 +345,12 @@ export default function QuizForm({ route, examType }: QuizFormProps) {
           type="button"
           onClick={handleStart}
           disabled={!isFormValid()}
-          className="flex-1"
+          className=" cursor-pointer flex-1"
         >
           <Play className="mr-2 h-4 w-4" /> Start Quiz
         </Button>
         <Button type="button" onClick={handleReset} variant="outline" className="flex-1">
-          <RefreshCw className="mr-2 h-4 w-4" /> Reset
+          <RefreshCw className=" cursor-pointer mr-2 h-4 w-4" /> Reset
         </Button>
       </div>
     </form>

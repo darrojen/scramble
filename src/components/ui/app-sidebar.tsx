@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { supabase } from '@/lib/supabaseClient'
-import { LogOut, BookOpenCheck, Award, Cpu, User, Bell, LayoutDashboard } from 'lucide-react'
+import { LogOut, BookOpenCheck, Award, Cpu, User, Bell, LayoutDashboard, ChartNoAxesCombined } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AppSidebar() {
@@ -61,7 +61,7 @@ export default function AppSidebar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    window.location.href = '/'
+    window.location.href = '/auth/login'
     toast.success('Successfully logged out')
   }
 
@@ -70,6 +70,7 @@ export default function AppSidebar() {
     { title: 'Quiz', url: '/main/quiz', icon: BookOpenCheck },
     { title: 'Ultimi AI', url: '/main/ultimi-ai', icon: Cpu },
     { title: 'Leaderboard', url: '/main/leaderboard', icon: Award },
+    { title: 'Progress', url: '/main/progress', icon: ChartNoAxesCombined },
   ]
 
   if (loading) {

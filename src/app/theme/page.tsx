@@ -58,7 +58,7 @@ export default function ModeToggle() {
         <Button
           variant="outline"
           size="icon"
-          className="top-[20px] right-[20px] absolute"
+          className="top-[20px] cursor-pointer right-[20px] absolute"
         >
           {renderIcon()}
           <span className="sr-only">Toggle theme</span>

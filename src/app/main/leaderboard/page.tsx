@@ -62,21 +62,22 @@ const cartoonAvatars = [
 ];
 
 interface LeaderboardEntry {
-  username: string;
+  username: string | null;
   exam_type: string;
   total_points: number;
-  rank: number;
-  avatar_url?: string;
+  avatar_url?: string | null;
+  rank?: number;
+  firstName: string;
 }
 
 // League system
 function getLeague(points: number): string {
-if (points >= 5300) return 'Diamond';   
-if (points >= 4300) return 'Platinum';
-if (points >= 3300) return 'Gold';    
-if (points >= 2300) return 'Silver';  
-if (points >= 1300) return 'Bronze';
-return 'Palladium';
+  if (points >=20300) return 'Diamond';
+  if (points >= 7300) return 'Platinum';
+  if (points >= 3300) return 'Gold';
+  if (points >= 2300) return 'Silver';
+  if (points >= 900) return 'Bronze';
+  return 'Palladium';
 }
 
 // Badge colors
@@ -97,9 +98,17 @@ function getLeagueBadgeColor(league: string): string {
   }
 }
 
+// rank color for top 3
+function getRankColor(rank: number) {
+  if (rank === 1) return 'bg-[#DAA425] text-white';
+  if (rank === 2) return 'bg-[#C0C0C0] text-white';
+  if (rank === 3) return 'bg-amber-700 text-white';
+  return 'bg-gray-100 text-gray-800';
+}
+
 export default function Leaderboard() {
   const [data, setData] = useState<LeaderboardEntry[]>([]);
-  const [filteredData, setFilteredData] = useState<LeaderboardEntry[]>([]);
+  const [displayData, setDisplayData] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [examFilter, setExamFilter] = useState<string>('all');
@@ -109,64 +118,75 @@ export default function Leaderboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    let query = supabase.from('leaderboard_view').select('*');
+    try {
+      let query = supabase.from('leaderboard_view').select('*');
+      if (examFilter !== 'all') query = query.eq('exam_type', examFilter);
 
-    if (examFilter !== 'all') query = query.eq('exam_type', examFilter);
-
-    const { data: result, error } = await query;
-    if (error) {
-      console.error(error);
+      const { data: result, error } = await query;
+      if (error) {
+        console.error(error);
+        setData([]);
+      } else {
+        const normalized = (result || []).map((r: any) => ({
+          ...r,
+          username: r.username ?? null,
+          total_points:
+            typeof r.total_points === 'string'
+              ? Number(r.total_points)
+              : r.total_points,
+          avatar_url: r.avatar_url ?? null,
+        }));
+        setData(normalized);
+      }
+    } catch (err) {
+      console.error(err);
       setData([]);
-      setFilteredData([]);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const sorted = [...(result || [])].sort((a, b) =>
-      sortOrder === 'asc'
-        ? a.total_points - b.total_points
-        : b.total_points - a.total_points
-    );
-
-    setData(sorted);
-    setFilteredData(sorted);
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchData();
-  }, [examFilter, sortOrder]);
+  }, [examFilter]);
 
   useEffect(() => {
-    let filtered = data.filter((entry) =>
-      entry.username.toLowerCase().includes(searchTerm.toLowerCase())
+    let processed = data.filter((entry) =>
+      (entry.username ?? '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (leagueFilter !== 'all') {
-      filtered = filtered.filter(
+      processed = processed.filter(
         (entry) => getLeague(entry.total_points) === leagueFilter
       );
     }
 
-    setFilteredData(filtered);
-  }, [searchTerm, leagueFilter, data]);
-   
+    processed.sort((a, b) => {
+      if (a.total_points === b.total_points) {
+        return (a.username ?? '')
+          .toLowerCase()
+          .localeCompare((b.username ?? '').toLowerCase());
+      }
+      return sortOrder === 'asc'
+        ? a.total_points - b.total_points
+        : b.total_points - a.total_points;
+    });
 
+    const ranked = processed.map((entry, idx) => ({
+      ...entry,
+      rank: idx + 1,
+    }));
 
-  const getRankColor = (rank: number) => {
-    if (rank === 1) return 'bg-[#DAA425] text-white';
-    if (rank === 2) return 'bg-[#C0C0C0] text-white';
-    if (rank === 3) return 'bg-amber-700 text-white';
-    return 'bg-gray-100 text-gray-800';
-  };
+    setDisplayData(ranked);
+  }, [data, searchTerm, leagueFilter, sortOrder]);
+
   return (
-    <div className="p-6 min-h-scree">
+    <div className="p-6 min-h-screen">
       <Card className="mb-6">
         <CardHeader className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <CardTitle>Leaderboard</CardTitle>
 
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-            {/* Search */}
             <div className="relative flex-1 sm:flex-none">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 <Search size={16} />
@@ -179,11 +199,7 @@ export default function Leaderboard() {
               />
             </div>
 
-            {/* Exam filter */}
-            <Select
-              defaultValue="all"
-              onValueChange={(val) => setExamFilter(val)}
-            >
+            <Select defaultValue="all" onValueChange={(val) => setExamFilter(val)}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="Exam Type" />
               </SelectTrigger>
@@ -196,11 +212,7 @@ export default function Leaderboard() {
               </SelectContent>
             </Select>
 
-            {/* League filter */}
-            <Select
-              defaultValue="all"
-              onValueChange={(val) => setLeagueFilter(val)}
-            >
+            <Select defaultValue="all" onValueChange={(val) => setLeagueFilter(val)}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="League" />
               </SelectTrigger>
@@ -211,11 +223,10 @@ export default function Leaderboard() {
                 <SelectItem value="Gold">Gold</SelectItem>
                 <SelectItem value="Silver">Silver</SelectItem>
                 <SelectItem value="Bronze">Bronze</SelectItem>
-                <SelectItem value="palladium">palladium</SelectItem>
+                <SelectItem value="Palladium">Palladium</SelectItem>
               </SelectContent>
             </Select>
 
-            {/* Sort order */}
             <Select
               defaultValue="desc"
               onValueChange={(val) => setSortOrder(val as 'asc' | 'desc')}
@@ -237,7 +248,7 @@ export default function Leaderboard() {
         <CardContent>
           {loading ? (
             <div className="space-y-2">
-              {[...Array(5)].map((_, idx) => (
+              {[...Array(6)].map((_, idx) => (
                 <Skeleton key={idx} className="h-10 w-full rounded-md" />
               ))}
             </div>
@@ -252,56 +263,76 @@ export default function Leaderboard() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-            <TableBody>
-  {filteredData.map((entry, idx) => {
-    const rank = idx + 1;
-    const league = getLeague(entry.total_points);
-    const avatar =
-      entry.avatar_url || cartoonAvatars[idx % cartoonAvatars.length];
 
-    // Replace rank with medal only for top 3
-    return (
-      <TableRow key={entry.username}>
-        <TableCell><div className={`flex items-center justify-center w-8 h-8 rounded-full ${getRankColor(entry.rank || idx + 1)}`}>
-                        {entry.rank || idx + 1}
-                       </div></TableCell>
-        <TableCell className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={avatar} alt={entry.username} />
-            <AvatarFallback>{entry.username[0]}</AvatarFallback>
-          </Avatar>
-          {entry.username}
-        </TableCell> <TableCell>{entry.total_points}</TableCell>
-        <TableCell>
-          <Badge className={`${getLeagueBadgeColor(league)}`}>
-            {league}
-          </Badge>
-        </TableCell>
-        <TableCell className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => alert(`Viewing ${entry.username}`)}>
-                View
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => alert(`Contacting ${entry.username}`)}>
-                Contact
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => alert(`Connecting with ${entry.username}`)}>
-                Connect
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </TableCell>
-      </TableRow>
-    );
-  })}
-</TableBody>
+              <TableBody>
+                {displayData.map((entry, idx) => {
+                  const league = getLeague(entry.total_points);
+                  const avatar =
+                    entry.avatar_url || cartoonAvatars[idx % cartoonAvatars.length];
+                  const username = entry.username ?? 'Unknown user';
 
+                  return (
+                    <TableRow key={`${username}-${entry.total_points}`}>
+                      <TableCell>
+                        <div
+                          className={`flex items-center justify-center w-8 h-8 rounded-full ${getRankColor(
+                            entry.rank ?? idx + 1
+                          )}`}
+                        >
+                          {entry.rank}
+                        </div>
+                      </TableCell>
+
+                      <TableCell className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={avatar} alt={username} />
+                          <AvatarFallback>{username[0]}</AvatarFallback>
+                        </Avatar>
+                        {username ?? entry.firstName}
+                      </TableCell>
+
+                      <TableCell>{entry.total_points}</TableCell>
+
+                      <TableCell>
+                        <Badge className={`${getLeagueBadgeColor(league)}`}>
+                          {league}
+                        </Badge>
+                      </TableCell>
+
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              className="cursor-pointer"
+                              variant="ghost"
+                              size="icon"
+                            >
+                              <MoreHorizontal />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => alert(`Viewing ${username}`)}
+                            >
+                              View
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => alert(`Contacting ${username}`)}
+                            >
+                              Contact
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => alert(`Connecting with ${username}`)}
+                            >
+                              Connect
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
             </Table>
           )}
         </CardContent>
@@ -309,5 +340,3 @@ export default function Leaderboard() {
     </div>
   );
 }
-
-

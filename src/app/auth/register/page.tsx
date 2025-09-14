@@ -351,7 +351,7 @@ export default function RegisterPage() {
 
         <Button
           type="submit"
-          className="w-full bg-primary  text-black hover:bg-primary-dark"
+          className="w-full bg-primary cursor-pointer text-black hover:bg-primary-dark"
           disabled={loading}
         >
           {loading ? 'Creating account...' : 'Register'}

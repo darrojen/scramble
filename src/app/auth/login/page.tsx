@@ -376,7 +376,7 @@ export default function LoginPage() {
           </Box>
         </Box>
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="cursor-pointer w-full" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </Button>
 
