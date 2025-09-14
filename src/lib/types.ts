@@ -22,3 +22,6 @@ export type QuizScoreRow = {
   celebrated_diamond: boolean;
   celebrated_palladium: boolean;
 };
+
+
+

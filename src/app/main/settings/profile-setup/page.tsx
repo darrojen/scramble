@@ -12,9 +12,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useTheme } from 'next-themes';
 import Textarea from '@/components/ui/textarea';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, User } from 'lucide-react';
-
-/* THREE imports */
+import { Trophy, User, Camera } from 'lucide-react';
+import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, OrbitControls } from '@react-three/drei';
 
@@ -31,6 +30,11 @@ interface Profile {
   bio: string;
   avatar_url: string | null;
   profile_completion: number;
+}
+interface FieldDef {
+  label: string;
+  key: keyof Profile;
+  isTextarea?: boolean;
 }
 
 type ExamLeague = {
@@ -50,11 +54,11 @@ const cartoonAvatars = [
 
 /* ---------- league decision (same thresholds you used earlier) ---------- */
 function getLeague(points: number): string {
-  if (points >= 5300) return 'Diamond';
-  if (points >= 4300) return 'Platinum';
-  if (points >= 3300) return 'Gold';
-  if (points >= 2300) return 'Silver';
-  if (points >= 1300) return 'Bronze';
+  if (points >= 27300) return 'Diamond';
+  if (points >= 13300) return 'Platinum';
+  if (points >= 5300) return 'Gold';
+  if (points >= 1300) return 'Silver';
+  if (points >= 900) return 'Bronze';
   return 'Palladium';
 }
 
@@ -330,21 +334,20 @@ export default function ProfileSetupPage() {
     );
   }
 
-  const fields = [
+  const fields: FieldDef[] = [
     { label: 'Username', key: 'username' },
     { label: 'First Name', key: 'first_name' },
     { label: 'Last Name', key: 'last_name' },
     { label: 'Phone', key: 'phone' },
+    { label: 'Email', key: 'email' },
     { label: 'Department', key: 'department' },
     { label: 'State', key: 'city' },
     { label: 'Bio', key: 'bio', isTextarea: true },
   ] as const;
 
-  // Determine the overall league based on total points
   const overallLeague = totalPoints !== null ? getLeague(totalPoints) : 'Palladium';
 
   return (
-    // <motion.div className={`min-h-screen p-6 ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
     <motion.div className={`min-h-screen p-6 ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'} ${theme === 'system' ? 'bg-gray-900 text-white' : ''}`}>
       <motion.div
         className="w-full p-6 rounded-lg mb-8 flex items-center justify-between gap-4"
@@ -352,12 +355,33 @@ export default function ProfileSetupPage() {
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-lg bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 shadow-lg">
-            <Avatar className="w-20 h-20 shadow-md">
-              {previewUrl ? <AvatarImage src={previewUrl} /> : <AvatarFallback>{profile.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>}
-            </Avatar>
-          </div>
+            <div className="relative">
+  <Avatar className="w-24 h-24 rounded-full overflow-hidden border">
+    {previewUrl ? (
+      <AvatarImage
+        src={previewUrl}
+        alt="Profile"
+        className="object-contain w-full h-full"
+      />
+    ) : (
+      <AvatarFallback className="text-lg font-semibold">
+        {profile.username?.[0]?.toUpperCase() || 'U'}
+      </AvatarFallback>
+    )}
+  </Avatar>
 
+  {editMode && (
+    <label className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-full cursor-pointer shadow-md">
+      <Camera className="w-4 h-4" />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleAvatarChange}
+        className="hidden"
+      />
+    </label>
+  )}
+</div>
           <div>
             <h2 className="text-2xl font-bold">{profile.username}</h2>
             <p className="text-sm opacity-80">{profile.first_name} {profile.last_name} ● {profile.company || '—'}</p>
