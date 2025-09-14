@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { supabase } from '@/lib/supabaseClient'
-import { LogOut, BookOpenCheck, Award, Cpu, User, Bell, LayoutDashboard, ChartNoAxesCombined } from 'lucide-react'
+import { LogOut, BookOpenCheck, Award, Cpu, User, Bell, LayoutDashboard, ChartNoAxesCombined, SwatchBook, Bot } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AppSidebar() {
@@ -68,7 +68,8 @@ export default function AppSidebar() {
   const navItems = [
     { title: 'Dashboard', url: '/main/dashboard', icon: LayoutDashboard },
     { title: 'Quiz', url: '/main/quiz', icon: BookOpenCheck },
-    { title: 'Ultimi AI', url: '/main/ultimi-ai', icon: Cpu },
+    { title: 'Ultimi AI', url: '/main/Chatbot', icon: Bot },
+    { title: 'Flashcards', url: '/main/Flashcards', icon: SwatchBook },
     { title: 'Leaderboard', url: '/main/leaderboard', icon: Award },
     { title: 'Progress', url: '/main/progress', icon: ChartNoAxesCombined },
   ]
