@@ -68,9 +68,10 @@ export default function AppSidebar() {
   const navItems = [
     { title: 'Dashboard', url: '/main/dashboard', icon: LayoutDashboard },
     { title: 'Quiz', url: '/main/quiz', icon: BookOpenCheck },
-    { title: 'Ultimi AI', url: '/main/ultimi-ai', icon: Cpu },
     { title: 'Leaderboard', url: '/main/leaderboard', icon: Award },
     { title: 'Progress', url: '/main/progress', icon: ChartNoAxesCombined },
+    { title: 'Sponsors', url: '/main/sponsors', icon: ChartNoAxesCombined },
+    { title: 'Ultimi AI', url: '/main/ultimi-ai', icon: Cpu },
   ]
 
   if (loading) {
