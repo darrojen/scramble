@@ -3,8 +3,6 @@
 
 import '@/app/globals.css'
 import { motion } from 'framer-motion';
-// import './LoadingSpinner.css'; // Import the CSS file
-
 interface LoadingProps {
   message: string;
 }

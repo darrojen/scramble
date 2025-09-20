@@ -54,7 +54,7 @@ export default function ResultDisplay({
         variants={variants}
         className="space-y-4 text-center"
       >
-        <h2 className="text-4xl font-bold gradient-bg text-transparent bg-clip-text">
+        <h2 className="text-4xl font-bold  text-transparent bg-clip-text">
           WAEC Results
         </h2>
         <p className="flex justify-center items-center text-2xl">

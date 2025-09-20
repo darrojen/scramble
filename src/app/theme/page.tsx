@@ -20,16 +20,13 @@ export default function ModeToggle() {
     setMounted(true);
   }, []);
 
-  // 👇 Ensure theme applies instantly without reload
   React.useEffect(() => {
     if (!mounted || !theme) return;
 
     const root = document.documentElement;
 
-    // Remove any previous theme classes
-    root.classList.remove('light', 'dark', 'system', 'custom', 'tech');
+    root.classList.remove('light', 'dark', 'system', 'custom');
 
-    // Apply the active theme as a class to <html>
     root.classList.add(theme);
   }, [theme, mounted]);
 
@@ -41,12 +38,8 @@ export default function ModeToggle() {
         return <Sun className="h-[1.2rem] w-[1.2rem]" />;
       case 'dark':
         return <Moon className="h-[1.2rem] w-[1.2rem]" />;
-      case 'system':
-        return <Monitor className="h-[1.2rem] w-[1.2rem]" />;
       case 'custom':
         return <Palette className="h-[1.2rem] w-[1.2rem]" />;
-      case 'tech':
-        return <Cpu className="h-[1.2rem] w-[1.2rem]" />;
       default:
         return <Circle className="h-[1.2rem] w-[1.2rem]" />;
     }
@@ -58,18 +51,22 @@ export default function ModeToggle() {
         <Button
           variant="outline"
           size="icon"
-          className="top-[20px] cursor-pointer right-[20px] absolute"
+          className="top-[20px] z-1000 cursor-pointer right-[20px] fixed custom:text-white"
         >
           {renderIcon()}
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('custom')}>Custom</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('tech')}>Tech</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('light')}>
+          Light
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')}>
+          Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('custom')}>
+          Custom
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
