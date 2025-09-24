@@ -1,9 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useEffect, useState, ReactNode, createContext, useContext } from 'react'
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
+
 import { supabase } from '@/lib/supabaseClient'
-import Box from './box'
+import { useRouter } from 'next/navigation'
 
 interface User {
   name: string

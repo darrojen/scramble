@@ -5,12 +5,8 @@
 
 // export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+import { PostgrestError, createClient } from '@supabase/supabase-js';
 
-
-
-
-
-import { createClient, PostgrestError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 
 // Environment variable validation
@@ -62,7 +58,17 @@ export async function getCurrentUser() {
 }
 
 // Utility function to handle real-time subscription errors
-export function handleSubscriptionError(error: any) {
+// export function handleSubscriptionError(error: any) {
+//   console.error('Real-time subscription error:', error);
+//   toast.error('Real-time updates failed. Please refresh the page.');
+// }
+export function handleSubscriptionError(error: unknown) {
   console.error('Real-time subscription error:', error);
-  toast.error('Real-time updates failed. Please refresh the page.');
+
+  const msg =
+    (error as { response?: { message?: string } })?.response?.message ||
+    (error as { message?: string })?.message ||
+    'Real-time updates failed. Please refresh the page.';
+
+  toast.error(msg);
 }

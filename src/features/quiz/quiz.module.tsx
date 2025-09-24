@@ -11,7 +11,7 @@ export const QuizModule = () => {
   const [selectedExamType, setSelectedExamType] = useState('');
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex-1 max-h-[100vh]  flex items-center justify-center p-4">
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

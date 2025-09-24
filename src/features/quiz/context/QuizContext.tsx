@@ -1,12 +1,9 @@
 'use client';
 
-import questionsPool from '@/lib/questions';
-
-
+import { ReactNode, SetStateAction, createContext, useMemo, useState } from 'react';
 
 import { Question } from '@/lib/types';
-import { createContext, useState, ReactNode, SetStateAction } from 'react';
-
+import questionsPool from '@/lib/questions';
 
 interface ScoreResult {
   correct: number;
@@ -36,6 +33,8 @@ interface QuizContextType {
   generateQuestions: () => void;
   resetQuiz: () => void;
   calculateScores: () => ScoreResult;
+  isStarting: boolean;
+  setIsStarting: (starting: boolean) => void;
 }
 
 export const QuizContext = createContext<QuizContextType>({
@@ -60,30 +59,27 @@ export const QuizContext = createContext<QuizContextType>({
   generateQuestions: () => {},
   resetQuiz: () => {},
   calculateScores: () => ({ correct: 0, total: 0, percentage: 0 }),
+  isStarting: false,
+  setIsStarting: () => {},
 });
 
 export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
-  const [questionsPerSubject, setQuestionsPerSubject] = useState<
-    Record<string, number>
-  >({});
+  const [questionsPerSubject, setQuestionsPerSubject] = useState<Record<string, number>>({});
   const [totalTime, setTotalTime] = useState(0);
-  const [examType, setExamType] = useState<'WAEC' | 'NECO' | 'JAMB' | 'normal'>(
-    'normal'
-  );
+  const [examType, setExamType] = useState<'WAEC' | 'NECO' | 'JAMB' | 'normal'>('normal');
   const [questions, setQuestions] = useState<Record<string, Question[]>>({});
   const [userAnswers, setUserAnswers] = useState<Record<string, number[]>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [currentSubject, setCurrentSubject] = useState('');
-  const [currentIndices, setCurrentIndices] = useState<Record<string, number>>(
-    {}
-  );
-   
+  const [currentIndices, setCurrentIndices] = useState<Record<string, number>>({});
+  const [isStarting, setIsStarting] = useState(false); // ✅ fixed: state added
+
   const generateQuestions = () => {
     const newQuestions: Record<string, Question[]> = {};
     const newAnswers: Record<string, number[]> = {};
     const newIndices: Record<string, number> = {};
-    
+
     const subjects =
       examType === 'JAMB' && !selectedSubjects.includes('english')
         ? [...selectedSubjects, 'english']
@@ -120,6 +116,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     setIsSubmitted(false);
     setCurrentSubject('');
     setCurrentIndices({});
+    setIsStarting(false);
   };
 
   const calculateScores = (): ScoreResult => {
@@ -131,7 +128,6 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
         if (userAnswers[subject]?.[idx] === q.correct) {
           correct++;
         }
-
         total++;
       });
     });
@@ -143,33 +139,46 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     };
   };
 
-  return (
-    <QuizContext.Provider
-      value={{
-        selectedSubjects,
-        setSelectedSubjects,
-        questionsPerSubject,
-        setQuestionsPerSubject,
-        totalTime,
-        setTotalTime,
-        examType,
-        setExamType,
-        questions,
-        setQuestions,
-        userAnswers,
-        setUserAnswers,
-        isSubmitted,
-        setIsSubmitted,
-        currentSubject,
-        setCurrentSubject,
-        currentIndices,
-        setCurrentIndices,
-        generateQuestions,
-        resetQuiz,
-        calculateScores,
-      }}
-    >
-      {children}
-    </QuizContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      selectedSubjects,
+      setSelectedSubjects,
+      questionsPerSubject,
+      setQuestionsPerSubject,
+      totalTime,
+      setTotalTime,
+      examType,
+      setExamType,
+      questions,
+      setQuestions,
+      userAnswers,
+      setUserAnswers,
+      isSubmitted,
+      setIsSubmitted,
+      currentSubject,
+      setCurrentSubject,
+      currentIndices,
+      setCurrentIndices,
+      generateQuestions,
+      resetQuiz,
+      calculateScores,
+      isStarting,
+      setIsStarting,
+    }),
+    [
+      selectedSubjects,
+      questionsPerSubject,
+      totalTime,
+      examType,
+      questions,
+      userAnswers,
+      isSubmitted,
+      currentSubject,
+      currentIndices,
+      isStarting,
+      calculateScores,
+    ]
   );
+
+  return <QuizContext.Provider value={contextValue}>{children}</QuizContext.Provider>;
 };

@@ -1,21 +1,21 @@
 'use client';
 
-import { useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { CircleAlert, ArrowLeft, ArrowRight, Home } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { QuizContext } from '@/features/quiz/context/QuizContext';
-import SubjectSwitcher from '@/features/quiz/components/SubjectSwitcher';
+import { ArrowLeft, ArrowRight, CircleAlert, Home } from 'lucide-react';
+import { useContext, useEffect, useState } from 'react';
+
+import LoadingSpinner from '@/features/quiz/components/LoadingSpinner';
 import PreviewQuestion from '@/features/quiz/components/PreviewQuestion';
 import { Question } from '@/lib/types';
-import LoadingSpinner from '@/features/quiz/components/LoadingSpinner';
+import { QuizContext } from '@/features/quiz/context/QuizContext';
+import SubjectSwitcher from '@/features/quiz/components/SubjectSwitcher';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export default function Preview() {
   const {
     questions,
     userAnswers,
     setUserAnswers,
-    selectedSubjects,
     currentSubject,
   } = useContext(QuizContext);
 

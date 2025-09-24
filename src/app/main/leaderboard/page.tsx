@@ -1,8 +1,34 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Filter, MoreHorizontal, Search } from 'lucide-react';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -11,40 +37,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { useEffect, useState } from 'react';
+
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Filter, MoreHorizontal, Search } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'sonner';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationLink,
-  PaginationNext,
-} from '@/components/ui/pagination';
+import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
 const cartoonAvatars = [
@@ -151,7 +152,7 @@ export default function Leaderboard() {
 
   useEffect(() => {
     fetchData();
-  }, [sortOrder]);
+  }, [sortOrder, fetchData]);
 
   useEffect(() => {
     let filtered = data.filter((entry) =>
@@ -372,7 +373,7 @@ export default function Leaderboard() {
                           </Avatar>
                           {entry.username}
                         </TableCell>
-                        <TableCell>{entry.total_points} {'𝙐𝙥'}</TableCell>
+                        <TableCell>{entry.total_points} <span className='text-[12px]'>{'𝙐𝙥'}</span></TableCell>
                         <TableCell>
                           <Badge className={getLeagueBadgeColor(league)}>
                             {league}

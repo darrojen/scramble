@@ -1,40 +1,42 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Trophy,
-  ArrowLeft,
-  Info,
-  Building2,
-  Mail,
-  Phone,
-  MapPin,
-  FileText,
-} from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import * as THREE from 'three';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, OrbitControls } from '@react-three/drei';
-import { useTheme } from 'next-themes';
+
 import {
-  Chart as ChartJS,
+  ArcElement,
+  BarElement,
   CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LineElement,
   LinearScale,
   PointElement,
-  LineElement,
-  BarElement,
+  RadialLinearScale,
   Title,
   Tooltip,
-  Legend,
-  ArcElement,
-  RadialLinearScale,
-  Filler,
 } from 'chart.js';
+import {
+  ArrowLeft,
+  Building2,
+  FileText,
+  Info,
+  Mail,
+  MapPin,
+  Phone,
+  Trophy,
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Float, OrbitControls } from '@react-three/drei';
+import { useEffect, useRef, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+
 import { Line } from 'react-chartjs-2';
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/lib/supabaseClient';
+import { useTheme } from 'next-themes';
 
 ChartJS.register(
   CategoryScale,
@@ -195,7 +197,7 @@ export default function UserProfilePage() {
 
   return (
     <div
-      className={`min-h-screen p-4 sm:p-6 lg:p-8 ${
+      className={`min-h-screen max-h-[100vh] p-4 sm:p-6 lg:p-8 ${
         theme === 'dark'
           ? 'bg-gray-900 text-gray-100'
           : 'bg-gray-50 text-gray-900'
@@ -210,7 +212,7 @@ export default function UserProfilePage() {
               : '/main/sponsors'
           )
         }
-        className="relative top-4 left-4 w-10 h-10 flex items-center justify-center bg-gray-200 dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-300 dark:hover:bg-gray-700 z-50"
+        className="relative flex-1 top-[7px] left-4 w-10 h-10 flex items-center justify-center bg-gray-200 dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-300 dark:hover:bg-gray-700 z-50"
       >
         <ArrowLeft className="w-5 h-5 text-blue-600 dark:text-blue-400" />
       </button>

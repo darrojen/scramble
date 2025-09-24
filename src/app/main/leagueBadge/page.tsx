@@ -9,7 +9,7 @@ import { OrbitControls, Float } from '@react-three/drei';
 /* -----------------------------
    🪙 Celebration Wrapper
 -------------------------------- */
-function CelebrationWrapper({
+export default function CelebrationWrapper({
   shape,
   color,
   emissive,
@@ -19,7 +19,8 @@ function CelebrationWrapper({
   subtitle,
   onClose,
 }: {
-  shape: any;
+  shape: React.ReactNode;
+  // shape: THREE.BufferGeometry;
   color: string;
   emissive: string;
   confettiColors: string[];
@@ -117,6 +118,7 @@ export  function GoldCelebration({ onClose }: { onClose?: () => void }) {
       {visible && (
         <CelebrationWrapper
           shape={<icosahedronGeometry args={[1, 0]} />}
+  // shape={new THREE.IcosahedronGeometry(1, 0)}
           color="#FFD700"
           emissive="#FFA500"
           confettiColors={['#FFD700', '#FFF700', '#FFA500']}
@@ -262,7 +264,7 @@ export  function DiamondCelebration({ onClose }: { onClose?: () => void }) {
 }
 
 // 🥉 BRONZE → Triangle
-export default function BronzeCelebration({ onClose }: { onClose?: () => void }) {
+export  function BronzeCelebration({ onClose }: { onClose?: () => void }) {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     const t = setTimeout(() => {
