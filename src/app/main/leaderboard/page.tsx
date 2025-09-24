@@ -152,7 +152,7 @@ export default function Leaderboard() {
 
   useEffect(() => {
     fetchData();
-  }, [sortOrder, fetchData]);
+  }, [sortOrder]);
 
   useEffect(() => {
     let filtered = data.filter((entry) =>

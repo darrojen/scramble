@@ -288,7 +288,7 @@ export default function Notifications() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [currentUserId, fetchNotifications]);
+  }, [currentUserId]);
 
   // Handle dismiss
   const handleDismiss = async (notificationId: string) => {

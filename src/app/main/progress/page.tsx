@@ -179,7 +179,7 @@ export default function ProgressPage() {
       setLoading(false)
     }
     fetchScores()
-  }, [filter, aggregateScores])
+  }, [filter])
 
   // Chart dataset colors per mode
   const chartColors: Record<string, { border: string; background: string | string[] }> = {

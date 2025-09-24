@@ -103,7 +103,7 @@ export default function Connections() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [fetchConnections, currentUserId]);
+  }, [ currentUserId]);
 
   // Handle accept/reject connection
   const handleConnectionResponse = async (
