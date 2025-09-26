@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { supabase } from '@/lib/supabaseClient'
+import { cn } from '@/lib/utils';
+
 import {
   Card,
   CardContent,
@@ -50,7 +52,7 @@ export default function ProgressPage() {
   const [activityData, setActivityData] = useState<{ [key: string]: number }>({})
   const [loading, setLoading] = useState(true)
   const [chartType, setChartType] = useState('line')
-  const [filter, setFilter] = useState('weekly')
+  const [filter, setFilter] = useState('daily')
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
 
@@ -289,7 +291,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className={`min-h-screen  flex-1 max-h-[100vh] p-8 transition-all duration-500 ${theme === 'custom' ? 'bg-slate-50' : theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`}>
+    <div className={`min-h-screen  flex-1  p-8 transition-all duration-500 ${theme === 'custom' ? 'bg-slate-50' : theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`}>
       {/* Chart Section */}
       <Card className={`bg-white dark:bg-black/40 border ${theme === 'custom' ? 'border-blue-400' : theme === 'light' ? 'border-gray-200' : 'border-cyan-500/30'} shadow-md ${theme === 'dark' ? 'dark:shadow-xl dark:shadow-cyan-500/20' : ''} rounded-2xl mb-8`}>
         <CardHeader>
@@ -303,25 +305,59 @@ export default function ProgressPage() {
               <SelectTrigger className={`w-40 ${theme === 'custom' ? 'bg-white border-blue-400 text-blue-400' : theme === 'light' ? 'bg-white border-gray-300 text-gray-900' : 'bg-black/50 border-cyan-500/30 text-cyan-400'}`}>
                 <SelectValue placeholder="Chart Type" />
               </SelectTrigger>
-              <SelectContent className={` ${theme === 'custom' ? 'bg-white text-blue-600' : theme === 'light' ? 'bg-white text-gray-900' : 'bg-black/80 text-cyan-300'}`}>
-                <SelectItem value="line">Line</SelectItem>
-                <SelectItem value="curve">Curve</SelectItem>
-                <SelectItem value="area">Area</SelectItem>
-                <SelectItem value="bar">Bar</SelectItem>
-                <SelectItem value="pie">Pie</SelectItem>
-                <SelectItem value="radar">Radar</SelectItem>
-                <SelectItem value="radial">Radial</SelectItem>
+              <SelectContent className={` ${theme === 'custom' ? 'bg-white  text-blue-600' : theme === 'light' ? 'bg-white text-gray-900' : 'bg-black/80 text-cyan-300'}`}>
+                <SelectItem value="line"
+                className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Line</SelectItem>
+                <SelectItem value="curve"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Curve</SelectItem>
+                <SelectItem value="area"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Area</SelectItem>
+                <SelectItem value="bar"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Bar</SelectItem>
+                <SelectItem value="pie"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Pie</SelectItem>
+                <SelectItem value="radar"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Radar</SelectItem>
+                <SelectItem value="radial"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Radial</SelectItem>
               </SelectContent>
             </Select>
-            <Select onValueChange={(v) => setFilter(v)} defaultValue="weekly">
+            <Select onValueChange={(v) => setFilter(v)} defaultValue="daily">
               <SelectTrigger className={`w-40 ${theme === 'custom' ? 'bg-white border-blue-400 text-blue-400' : theme === 'light' ? 'bg-white border-gray-300 text-gray-900' : 'bg-black/50 border-fuchsia-500/30 text-fuchsia-400'}`}>
                 <SelectValue placeholder="Filter" />
               </SelectTrigger>
               <SelectContent className={`${theme === 'custom' ? 'bg-white text-blue-600' : theme === 'light' ? 'bg-white text-gray-900' : 'bg-black/80 text-fuchsia-300'}`}>
-                <SelectItem value="daily">Daily</SelectItem>
-                <SelectItem value="weekly">Weekly</SelectItem>
-                <SelectItem value="monthly">Monthly</SelectItem>
-                <SelectItem value="yearly">Yearly</SelectItem>
+                <SelectItem value="daily"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Daily</SelectItem>
+                <SelectItem value="weekly"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Weekly</SelectItem>
+                <SelectItem value="monthly"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Monthly</SelectItem>
+                <SelectItem value="yearly"className={cn(
+                            'dropdown-menu-item hover:bg-primary-dark',
+                            theme === 'custom' && 'hover:[color:white]'
+                          )}>Yearly</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -362,9 +398,9 @@ export default function ProgressPage() {
                     }}
                     className={`${
                       selectedYear === year
-                        ? theme === 'custom' ? 'bg-blue-400 text-white' : theme === 'light' ? 'bg-blue-500 text-white' : 'bg-cyan-500 text-black'
+                        ? theme === 'custom' ? 'bg-blue-400 text-white' : theme === 'light' ? 'bg-blue-500 text-white' : 'bg-cyan-500 text-white'
                         : theme === 'custom' ? 'bg-white border-blue-400 text-blue-400' : theme === 'light' ? 'bg-white border-gray-300 text-gray-900' : 'bg-black/50 border-cyan-500/30 text-cyan-400'
-                    } ${theme === 'custom' ? 'hover:bg-blue-500 hover:text-white' : theme === 'light' ? 'hover:bg-blue-500/80 hover:text-white' : 'hover:bg-cyan-500/80 hover:text-black'}`}
+                    } ${theme === 'custom' ? 'hover:bg-blue-500 text-white' : theme === 'light' ? 'hover:bg-blue-500/80 hover:text-white' : 'hover:bg-cyan-500/80 hover:text-white'}`}
                   >
                     {year}
                   </Button>
