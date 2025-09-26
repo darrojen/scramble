@@ -53,9 +53,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -80, opacity: 0 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 25 }}
-                  className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-[500px]"
+                  className="absolute top-4 left-[55%] -translate-x-1/2 z-50 w-[90%] md:w-[500px]"
                 >
-                  <div className="flex absolute items-center gap-3 bg-white dark:bg-gray-900 border border-red-500 text-red-600 px-4 py-3 rounded-xl shadow-xl">
+                  <div className="flex items-center justify-center gap-3  bg-white dark:bg-gray-900 border border-red-500 text-red-600 px-4 py-3 rounded-xl shadow-xl">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-800">
                       <WifiOff className="h-5 w-5" />
                     </div>
@@ -71,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </AnimatePresence>
 
             {/* Page Content */}
-            <div className={`${!isOnline ? 'pt-20' : ''} transition-all`}>
+            <div className={`${!isOnline ? 'pt-0' : ''} transition-all`}>
               <ModeToggle />
               {children}
             </div>

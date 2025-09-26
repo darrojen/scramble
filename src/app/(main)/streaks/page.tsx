@@ -284,7 +284,7 @@ export default function Preview() {
 
   // Wait until questions and answers are ready
   if (!ready || !questions[currentSubject] || !userAnswers) {
-    return <LoadingSpinner message="Loading preview..." />;
+    return <LoadingSpinner message="review..." />;
   }
 
   // Build subject-specific questions

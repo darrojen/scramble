@@ -51,14 +51,14 @@ export default function ModeToggle() {
         <Button
           variant="outline"
           size="icon"
-          className="top-[20px] z-1000 cursor-pointer right-[20px] fixed custom:text-white"
+          className="top-[20px] z-1000 cursor-pointer right-[20px] fixed hover:text-primary-dark"
         >
           {renderIcon()}
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
+        <DropdownMenuItem onClick={() => setTheme('light')} className='hover:bg-primary-dark'>
           Light
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
