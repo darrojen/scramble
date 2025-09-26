@@ -26,12 +26,12 @@ export default function HomePage() {
         </p>
 
         <div className="flex gap-4 justify-center">
-          <Link href="/auth/register">
+          <Link href="/register">
             <Button size="lg" className="rounded-2xl cursor-pointer shadow-lg">
               Get Started
             </Button>
           </Link>
-          <Link href="/auth/login">
+          <Link href="/login">
             <Button size="lg" variant="outline" className="cursor-pointer rounded-2xl">
               Sign In
             </Button>

@@ -163,7 +163,7 @@ export default function AppSidebar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.href = '/auth/login';
+    window.location.href = '/login';
     toast.success('Successfully logged out');
   };
 
@@ -184,24 +184,24 @@ export default function AppSidebar() {
   };
 
   const navItems = [
-    { title: 'Dashboard', url: '/main/dashboard', icon: LayoutDashboard },
-    { title: 'Quiz', url: '/main/quiz', icon: BookOpenCheck },
-    { title: "Students' Leaderboard", url: '/main/leaderboard', icon: Award },
-    { title: 'Progress', url: '/main/progress', icon: ChartNoAxesCombined },
-    { title: 'Sponsors', url: '/main/sponsors', icon: HandHelping },
+    { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
+    { title: 'Quiz', url: '/quiz', icon: BookOpenCheck },
+    { title: "Students' Leaderboard", url: '/leaderboard', icon: Award },
+    { title: 'Progress', url: '/progress', icon: ChartNoAxesCombined },
+    { title: 'Sponsors', url: '/sponsors', icon: HandHelping },
     {
       title: 'Ultimi AI',
-      url: '/main/ultimi-ai',
+      url: '/ultimi-ai',
       // icon: () => <Image src="/public/icon@.jpg" alt="ai" width={30} height={30} />,
       icon: Cpu
     },
-    { title: 'Notifications', url: '/main/notifications', icon: Bell },
-    { title: 'Messages', url: '/main/messages', icon: MessageCircle },
-    { title: 'Connections', url: '/main/connections', icon: Users },
+    { title: 'Notifications', url: '/notifications', icon: Bell },
+    { title: 'Messages', url: '/messages', icon: MessageCircle },
+    { title: 'Connections', url: '/connections', icon: Users },
   ];
 
   const moreItems = [
-    { title: 'Opinions & Reports', url: '/main/opinions', icon: MessageSquare },
+    { title: 'Opinions & Reports', url: '/opinions', icon: MessageSquare },
   ];
 
   const filteredNavItems = navItems.filter(item => {
@@ -246,7 +246,7 @@ export default function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link
                     href={item.url}
-                    className={`flex items-center gap-2 p-2 rounded-lg transition
+                    className={`flex pt-[20px] pb-[20px] items-center gap-2 p-2 rounded-lg transition
                       ${
                         isActive
                           ? 'bg-gray-100 dark:bg-gray-800 font-semibold border-l-4 border-primary'
@@ -287,8 +287,8 @@ export default function AppSidebar() {
                   className={`flex items-center gap-2 p-2 rounded-lg transition
                     hover:bg-gray-100 dark:hover:bg-gray-800
                     ${
-                      pathname.startsWith('/main/reports') ||
-                      pathname.startsWith('/main/opinions')
+                      pathname.startsWith('/reports') ||
+                      pathname.startsWith('/opinions')
                         ? 'bg-gray-100 dark:bg-gray-800 font-semibold border-l-4 border-primary'
                         : ''
                     }`}
@@ -349,7 +349,7 @@ export default function AppSidebar() {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/main/settings/profile-setup">
+              <Link href="/settings/profile-setup">
                 <User className="mr-2 h-4 w-4" /> Account
               </Link>
             </DropdownMenuItem>

@@ -4,26 +4,23 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import QuizForm from '@/features/quiz/components/QuizForm';
 
-
-
 export const QuizModule = () => {
   const [selectedRoute, setSelectedRoute] = useState('');
   const [selectedExamType, setSelectedExamType] = useState('');
 
   return (
-    <div className="flex-1 max-h-[100vh]  flex items-center justify-center p-4">
-
+    <div className="min-h-screen flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="card max-w-3xl w-full p-8"
       >
-        <h1 className="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text">Quiz Master</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Quiz Master</h1>
         {!selectedRoute ? (
           <div className="space-y-4">
-            <label className="block text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-              Select Your Department
+            <label className="block text-xl font-semibold mb-4">
+              Select Department
             </label>
             {['science', 'arts', 'both'].map(route => (
               <motion.label
@@ -37,9 +34,10 @@ export const QuizModule = () => {
                   value={route}
                   checked={selectedRoute === route}
                   onChange={() => setSelectedRoute(route)}
-                  className="form-radio h-6 w-6 text-blue-600 dark:text-blue-400 rounded-full focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-150 ease-in-out"
+                  className="form-radio h-7 w-7"
+                  aria-label={`Select ${route === 'arts' ? 'Arts/Commercial/Languages' : route} route`}
                 />
-                <span className="text-base capitalize text-gray-800 dark:text-gray-200">
+                <span className="text-lg capitalize">
                   {route === 'arts' ? 'Arts/Commercial/Languages' : route}
                 </span>
               </motion.label>
@@ -47,7 +45,7 @@ export const QuizModule = () => {
           </div>
         ) : !selectedExamType ? (
           <div className="space-y-4">
-            <label className="block text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+            <label className="block text-xl font-semibold mb-4">
               Select Exam Type
             </label>
             {['WAEC', 'NECO', 'JAMB', 'normal'].map(examType => (
@@ -62,9 +60,10 @@ export const QuizModule = () => {
                   value={examType}
                   checked={selectedExamType === examType}
                   onChange={() => setSelectedExamType(examType)}
-                  className="form-radio h-6 w-6 text-blue-600 dark:text-blue-400 rounded-full focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-150 ease-in-out"
+                  className="form-radio h-7 w-7"
+                  aria-label={`Select ${examType} exam type`}
                 />
-                <span className="text-base capitalize text-gray-800 dark:text-gray-200">{examType}</span>
+                <span className="text-lg capitalize">{examType}</span>
               </motion.label>
             ))}
             <motion.button
@@ -77,7 +76,11 @@ export const QuizModule = () => {
             </motion.button>
           </div>
         ) : (
-          <QuizForm route={selectedRoute} examType={selectedExamType} />
+          <QuizForm
+            route={selectedRoute}
+            examType={selectedExamType}
+            onBack={() => setSelectedExamType('')}
+          />
         )}
       </motion.div>
     </div>

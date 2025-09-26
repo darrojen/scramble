@@ -165,6 +165,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       isStarting,
       setIsStarting,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
     [
       selectedSubjects,
       questionsPerSubject,

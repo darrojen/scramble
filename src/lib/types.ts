@@ -23,16 +23,6 @@ export type QuizScoreRow = {
   celebrated_palladium: boolean;
 };
 
-
-export interface userInfo{
-  id: string;
-  avatar_url: string | null;
-  email: string | null;
-  full_name: string | null;
-  username: string | null;
-  created_at: string | null;
-}
-
 export interface RawSender {
   id: string;
   username: string;
@@ -49,3 +39,4 @@ export interface RawMessage {
   is_read: boolean;
   sender?: RawSender[];
 }
+
