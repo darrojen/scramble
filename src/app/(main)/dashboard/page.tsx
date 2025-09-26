@@ -309,11 +309,11 @@ export default function DashboardPage() {
       (result || []).map(async (entry: LeaderboardEntry, idx: number) => {
         let avatarUrl: string | null = null;
 
-        if (entry.student_id) {
+        if (entry?.student_id) {
           const { data: profile } = await supabase
             .from('profiles')
             .select('avatar_url')
-            .eq('id', entry.student_id)
+            .eq('id', entry?.student_id)
             .single();
           avatarUrl = profile?.avatar_url || null;
         }
@@ -398,12 +398,12 @@ export default function DashboardPage() {
   // Filter leaderboard data
   useEffect(() => {
     let filtered = leaderboardData.filter(entry =>
-      entry.username.toLowerCase().includes(searchTermLeaderboard.toLowerCase())
+      entry?.username?.toLowerCase().includes(searchTermLeaderboard.toLowerCase())
     );
 
     if (leagueFilter !== 'all') {
       filtered = filtered.filter(entry => {
-        const points = entry.total_points;
+        const points = entry?.total_points;
         if (points >= 27300) return leagueFilter === 'Diamond';
         if (points >= 13300) return leagueFilter === 'Platinum';
         if (points >= 5300) return leagueFilter === 'Gold';
@@ -926,22 +926,22 @@ export default function DashboardPage() {
                   console.log({entry})
                   const rank = idx + 1;
                   const league =
-                    entry.total_points >= 27300
+                    entry?.total_points >= 27300
                       ? 'Diamond'
-                      : entry.total_points >= 13300
+                      : entry?.total_points >= 13300
                       ? 'Platinum'
-                      : entry.total_points >= 5300
+                      : entry?.total_points >= 5300
                       ? 'Gold'
-                      : entry.total_points >= 1300
+                      : entry?.total_points >= 1300
                       ? 'Silver'
-                      : entry.total_points >= 900
+                      : entry?.total_points >= 900
                       ? 'Bronze'
                       : 'Palladium';
-                  const isCurrentUser = entry.student_id === currentUserId;
+                  const isCurrentUser = entry?.student_id === currentUserId;
 
                   return (
                     <Card
-                      key={entry.student_id}
+                      key={entry?.student_id}
                       className={`p-4 ${
                         isCurrentUser
                           ? theme === 'custom'
@@ -963,13 +963,13 @@ export default function DashboardPage() {
                           </div>
                           <Avatar className="h-8 w-8">
                             <AvatarImage
-                              src={entry.avatar_url ?? ''}
-                              alt={entry.username}
+                              src={entry?.avatar_url ?? ''}
+                              alt={entry?.username}
                             />
-                            <AvatarFallback>{entry.username}</AvatarFallback>
+                            <AvatarFallback>{entry?.username}</AvatarFallback>
                           </Avatar>
                           <span className="font-semibold">
-                            {entry.username}
+                            {entry?.username}
                           </span>
                         </div>
                         <div className="text-right">
@@ -1003,7 +1003,7 @@ export default function DashboardPage() {
                                 onClick={e => {
                                   e.stopPropagation();
                                   router.push(
-                                    `/users/${entry.student_id}`
+                                    `/users/${entry?.student_id}`
                                   );
                                 }}
                               >
@@ -1013,7 +1013,7 @@ export default function DashboardPage() {
                                 onClick={e => {
                                   e.stopPropagation();
                                   router.push(
-                                    `/messages?userId=${entry.student_id}`
+                                    `/messages?userId=${entry?.student_id}`
                                   );
                                 }}
                               >
@@ -1023,8 +1023,8 @@ export default function DashboardPage() {
                                 onClick={e => {
                                   e.stopPropagation();
                                   handleConnect(
-                                    entry.student_id,
-                                    entry.username
+                                    entry?.student_id,
+                                    entry?.username
                                   );
                                 }}
                               >
@@ -1043,7 +1043,7 @@ export default function DashboardPage() {
                                 : 'text-gray-300'
                             }`}
                           >
-                            Points: {entry.total_points}
+                            Points: {entry?.total_points}
                             <span className="text-[12px]">{' 𝙐𝙥'}</span>
                           </span>
                         </div>
@@ -1129,22 +1129,22 @@ export default function DashboardPage() {
                   {filteredLeaderboardData.map((entry, idx) => {
                     const rank = idx + 1;
                     const league =
-                      entry.total_points >= 27300
+                      entry?.total_points >= 27300
                         ? 'Diamond'
-                        : entry.total_points >= 13300
+                        : entry?.total_points >= 13300
                         ? 'Platinum'
-                        : entry.total_points >= 5300
+                        : entry?.total_points >= 5300
                         ? 'Gold'
-                        : entry.total_points >= 1300
+                        : entry?.total_points >= 1300
                         ? 'Silver'
-                        : entry.total_points >= 900
+                        : entry?.total_points >= 900
                         ? 'Bronze'
                         : 'Palladium';
-                    const isCurrentUser = entry.student_id === currentUserId;
+                    const isCurrentUser = entry?.student_id === currentUserId;
 
                     return (
                       <TableRow
-                        key={entry.student_id}
+                        key={entry?.student_id}
                         className={`cursor-pointer ${
                           theme === 'custom'
                             ? 'hover:bg-blue-50'
@@ -1161,7 +1161,7 @@ export default function DashboardPage() {
                             : ''
                         }`}
                         onClick={() =>
-                          router.push(`/users/${entry.student_id}`)
+                          router.push(`/users/${entry?.student_id}`)
                         }
                       >
                         <TableCell>
@@ -1176,10 +1176,10 @@ export default function DashboardPage() {
                         <TableCell className="flex items-center gap-2">
                           <Avatar className="h-8 w-8">
                             <AvatarImage
-                              src={entry.avatar_url ?? ''}
-                              alt={entry.username}
+                              src={entry?.avatar_url ?? ''}
+                              alt={entry?.username}
                             />
-                            <AvatarFallback>{entry.username}</AvatarFallback>
+                            <AvatarFallback>{entry?.username}</AvatarFallback>
                           </Avatar>
                           <span
                             className={`${
@@ -1190,7 +1190,7 @@ export default function DashboardPage() {
                                 : 'text-white'
                             }`}
                           >
-                            {entry.username}
+                            {entry?.username}
                           </span>
                         </TableCell>
                         <TableCell
@@ -1202,7 +1202,7 @@ export default function DashboardPage() {
                               : 'text-white'
                           }`}
                         >
-                          {entry.total_points}{' '}
+                          {entry?.total_points}{' '}
                           <span className="text-[12px]">{'𝙐𝙥'}</span>
                         </TableCell>
                         <TableCell>
@@ -1241,7 +1241,7 @@ export default function DashboardPage() {
                                 onClick={e => {
                                   e.stopPropagation();
                                   router.push(
-                                    `/users/${entry.student_id}`
+                                    `/users/${entry?.student_id}`
                                   );
                                 }}
                               >
@@ -1251,7 +1251,7 @@ export default function DashboardPage() {
                                 onClick={e => {
                                   e.stopPropagation();
                                   router.push(
-                                    `/messages?userId=${entry.student_id}`
+                                    `/messages?userId=${entry?.student_id}`
                                   );
                                 }}
                               >
@@ -1261,8 +1261,8 @@ export default function DashboardPage() {
                                 onClick={e => {
                                   e.stopPropagation();
                                   handleConnect(
-                                    entry.student_id,
-                                    entry.username
+                                    entry?.student_id,
+                                    entry?.username
                                   );
                                 }}
                               >
