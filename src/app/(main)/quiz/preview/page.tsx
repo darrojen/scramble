@@ -2,7 +2,6 @@
 
 import { ArrowLeft, ArrowRight, CircleAlert, Home } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
-
 import LoadingSpinner from '@/features/quiz/components/LoadingSpinner';
 import PreviewQuestion from '@/features/quiz/components/PreviewQuestion';
 import { Question } from '@/lib/types';
@@ -17,47 +16,62 @@ export default function Preview() {
     userAnswers,
     setUserAnswers,
     currentSubject,
+    setQuestions,
+    setCurrentSubject,
+    setCurrentIndices,
   } = useContext(QuizContext);
 
   const router = useRouter();
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [ready, setReady] = useState(false);
 
-  // Initialize userAnswers in localStorage
+  // Load quiz state from localStorage on mount
   useEffect(() => {
-    if (!questions || Object.keys(questions).length === 0) return;
+    const storedQuizState = localStorage.getItem('quizState');
+    if (storedQuizState && (!questions || Object.keys(questions).length === 0)) {
+      const quizState = JSON.parse(storedQuizState);
+      if (quizState.questions) setQuestions(quizState.questions);
+      if (quizState.userAnswers) setUserAnswers(quizState.userAnswers);
+      if (quizState.currentSubject) setCurrentSubject(quizState.currentSubject);
+      if (quizState.currentIndices) setCurrentIndices(quizState.currentIndices);
+    }
 
-    const storedAnswers = localStorage.getItem('userAnswers');
-    if (storedAnswers) {
-      setUserAnswers(JSON.parse(storedAnswers));
-    } else {
-      const initAnswers: Record<string, number[]> = {};
-      Object.keys(questions).forEach((subj) => {
-        initAnswers[subj] = questions[subj].map(() => -1);
-      });
-      setUserAnswers(initAnswers);
-      localStorage.setItem('userAnswers', JSON.stringify(initAnswers));
+    const storedPreviewState = localStorage.getItem('previewState');
+    if (storedPreviewState) {
+      const { currentIndex: storedIndex } = JSON.parse(storedPreviewState);
+      setCurrentIndex(storedIndex || 0);
     }
 
     setReady(true);
-  }, [questions, setUserAnswers]);
+  }, [questions, setQuestions, setUserAnswers, setCurrentSubject, setCurrentIndices]);
 
-  // Sync localStorage whenever userAnswers change
+  // Save currentIndex to localStorage
   useEffect(() => {
-    if (userAnswers) {
-      localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
-    }
-  }, [userAnswers]);
+    localStorage.setItem('previewState', JSON.stringify({ currentIndex }));
+  }, [currentIndex]);
+
+  // Clear localStorage on route leave
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const currentPath = window.location.pathname;
+      if (!['/quiz/home', '/quiz/preview'].includes(currentPath)) {
+        localStorage.removeItem('quizState');
+        localStorage.removeItem('userAnswers');
+        localStorage.removeItem('previewState');
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   // Wait until questions and answers are ready
   if (!ready || !questions[currentSubject] || !userAnswers) {
-    return (
-          <LoadingSpinner message="" />
-
-
-    );
+    return <LoadingSpinner message="" />;
   }
 
   // Build subject-specific questions
@@ -89,8 +103,13 @@ export default function Preview() {
   };
 
   const handleGoHome = () => {
+    localStorage.removeItem('quizState');
     localStorage.removeItem('userAnswers');
+    localStorage.removeItem('previewState');
     setUserAnswers({});
+    setQuestions({});
+    setCurrentIndices({});
+    setCurrentSubject('');
     router.push('/dashboard');
   };
 

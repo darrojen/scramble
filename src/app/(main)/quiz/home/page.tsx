@@ -197,9 +197,12 @@ export default function Quiz() {
     currentIndices,
     setCurrentIndices,
     userAnswers,
+    setUserAnswers,
     examType,
     isStarting,
     calculateScores,
+    setQuestions,
+    setCurrentSubject,
   } = useContext(QuizContext);
 
   const router = useRouter();
@@ -220,6 +223,38 @@ export default function Quiz() {
     { name: 'Diamond', min: 5300, column: 'celebrated_diamond', component: DiamondCelebration },
   ];
 
+  // Save quiz state to localStorage
+  useEffect(() => {
+    if (!questions || Object.keys(questions).length === 0) return;
+
+    const quizState = {
+      questions,
+      userAnswers,
+      currentSubject,
+      currentIndices,
+      totalTime,
+      examType,
+      isSubmitted,
+    };
+    localStorage.setItem('quizState', JSON.stringify(quizState));
+  }, [questions, userAnswers, currentSubject, currentIndices, totalTime, examType, isSubmitted]);
+
+  // Clear localStorage on route leave
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const currentPath = window.location.pathname;
+      if (!['/quiz/home', '/quiz/preview'].includes(currentPath)) {
+        localStorage.removeItem('quizState');
+        localStorage.removeItem('userAnswers');
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   // Auto-submit on tab/window leave
   useEffect(() => {
@@ -278,7 +313,7 @@ export default function Quiz() {
           .eq('student_id', user.id)
           .eq('quiz_id', currentSubject)
           .maybeSingle();
-// eslint-disable-next-line @typescript-eslint/no-unused-vars 
+
         let scoreId: number = 0;
         if (existingData) {
           await supabase
@@ -429,10 +464,9 @@ export default function Quiz() {
       }
     };
     handleQuizSubmission();
-    // eslint-disable-next-line react-hooks/exhaustive-deps 
   }, [isSubmitted, calculateScores, currentSubject, userAnswers, examType, router, setCurrentIndices]);
 
-   const jumpToQuestion = (index: number) => {
+  const jumpToQuestion = (index: number) => {
     setCurrentIndices({ ...currentIndices, [currentSubject]: index });
   };
 
@@ -444,7 +478,7 @@ export default function Quiz() {
   const CelebrationComp = leagueObj?.component;
 
   if (isStarting || !questions || Object.keys(questions).length === 0) {
-    return <LoadingSpinner message={isStarting ? "Starting quiz..." : "Loading quiz..."} />;
+    return <LoadingSpinner message={isStarting ? "" : ""} />;
   }
 
   if (CelebrationComp) {
@@ -476,7 +510,6 @@ export default function Quiz() {
           <div className="flex items-center gap-4 text-lg font-semibold">
             <Timer
               totalSeconds={totalTime}
-              // onTick={(elapsed: number) => setTimeTaken(elapsed)}
               onTimeUp={() => {
                 console.log('Time up, auto-submitting quiz');
                 setIsSubmitted(true);

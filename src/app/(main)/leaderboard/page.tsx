@@ -106,7 +106,11 @@ export default function Leaderboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    const query = supabase.from('leaderboard_view').select('*');
+    const query = supabase.from('leaderboard_view').select('*')
+    .gt('total_points', 0)
+    .not('total_points', 'is', null)  
+    .order('total_points', { ascending: false });
+;
 
     const { data: result, error } = await query;
     if (error) {
@@ -122,11 +126,11 @@ export default function Leaderboard() {
       (result || []).map(async (entry: LeaderboardEntry, idx: number) => {
         let avatarUrl: string | null = null;
 
-        if (entry?.student_id) {
+        if (entry.student_id) {
           const { data: profile } = await supabase
             .from('profiles')
             .select('avatar_url')
-            .eq('id', entry?.student_id)
+            .eq('id', entry.student_id)
             .single();
 
           avatarUrl = profile?.avatar_url || null;
@@ -162,7 +166,7 @@ export default function Leaderboard() {
 
     if (leagueFilter !== 'all') {
       filtered = filtered.filter((entry) => {
-        const points = entry?.total_points;
+        const points = entry.total_points;
         if (points >= 27300) return leagueFilter === 'Platinum';
         if (points >= 13300) return leagueFilter === 'Diamond';
         if (points >= 5300) return leagueFilter === 'Gold';
@@ -340,39 +344,39 @@ export default function Leaderboard() {
                 <TableBody>
                   {paginatedData.map((entry, idx) => {
                     const rank = startIndex + idx + 1;
-                    const league = entry?.total_points >= 27300 ? 'Platinum' :
-                                  entry?.total_points >= 13300 ? 'Diamond' :
-                                  entry?.total_points >= 5300 ? 'Gold' :
-                                  entry?.total_points >= 1300 ? 'Silver' :
-                                  entry?.total_points >= 900 ? 'Bronze' : 'Palladium';
-                    const isCurrentUser = entry?.student_id === currentUserId;
+                    const league = entry.total_points >= 27300 ? 'Platinum' :
+                                  entry.total_points >= 13300 ? 'Diamond' :
+                                  entry.total_points >= 5300 ? 'Gold' :
+                                  entry.total_points >= 1300 ? 'Silver' :
+                                  entry.total_points >= 900 ? 'Bronze' : 'Palladium';
+                    const isCurrentUser = entry.student_id === currentUserId;
 
                     return (
                       <TableRow
-                        key={entry?.student_id}
+                        key={entry.student_id}
                         className={`cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 ${
                           isCurrentUser ? (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') : ''
                         }`}
-                        onClick={() => router.push(`/users/${entry?.student_id}`)}
+                        onClick={() => router.push(`/users/${entry.student_id}`)}
                       >
                         <TableCell>
                           <div
                             className={`flex items-center justify-center w-8 h-8 rounded-full ${getRankColor(rank)}`}
                           >
-                            {entry?.rank || rank}
+                            {entry.rank || rank}
                           </div>
                         </TableCell>
                         <TableCell className="flex items-center gap-2">
                           <Avatar className="h-8 w-8">
                             <AvatarImage
-                              src={entry?.avatar_url || ''}
-                              alt={entry?.username ?? ""}
+                              src={entry.avatar_url || ''}
+                              alt={entry.username ?? ""}
                             />
                             <AvatarFallback>
-                              {entry?.username}
+                              {entry.username}
                             </AvatarFallback>
                           </Avatar>
-                          {entry?.username}
+                          {entry.username}
                         </TableCell>
                         <TableCell>{entry?.total_points ?? 0} <span className='text-[12px]'>{'𝙐𝙥'}</span></TableCell>
                         <TableCell>
@@ -391,7 +395,7 @@ export default function Leaderboard() {
                               <DropdownMenuItem
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  router.push(`/users/${entry?.student_id}`);
+                                  router.push(`/users/${entry.student_id}`);
                                 }}
                               >
                                 View
@@ -399,7 +403,7 @@ export default function Leaderboard() {
                               <DropdownMenuItem
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  router.push(`/messages?userId=${entry?.student_id}`);
+                                  router.push(`/messages?userId=${entry.student_id}`);
                                 }}
                               >
                                 Contact
@@ -407,7 +411,7 @@ export default function Leaderboard() {
                               <DropdownMenuItem
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleConnect(entry?.student_id);
+                                  handleConnect(entry.student_id);
                                 }}
                               >
                                 Connect
