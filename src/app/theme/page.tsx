@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun, Palette,  Circle } from 'lucide-react';
+import { Moon, Sun, Palette, Circle } from 'lucide-react';
 import { useTheme } from 'next-themes';
-
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,9 +24,7 @@ export default function ModeToggle() {
     if (!mounted || !theme) return;
 
     const root = document.documentElement;
-
     root.classList.remove('light', 'dark', 'system', 'custom');
-
     root.classList.add(theme);
   }, [theme, mounted]);
 
@@ -45,26 +43,49 @@ export default function ModeToggle() {
     }
   };
 
+  // Base classes for the button
+  const buttonClasses = cn(
+    'top-[20px] z-[1000] cursor-pointer right-[20px] fixed',
+    // Default hover (non-custom theme)
+    'hover:text-primary-dark',
+    // Conditional hover for custom theme: white text, optional primary bg
+    theme === 'custom' && 'hover:[color:white] hover:bg-[hsl(var(--primary))]'
+  );
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="top-[20px] z-1000 cursor-pointer right-[20px] fixed hover:text-primary-dark"
-        >
+        <Button variant="outline" size="icon" className={buttonClasses}>
           {renderIcon()}
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')} className='hover:bg-primary-dark'>
+        <DropdownMenuItem
+          onClick={() => setTheme('light')}
+          className={cn(
+            'dropdown-menu-item hover:bg-primary-dark',
+            theme === 'custom' && 'hover:[color:white]'
+          )}
+        >
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('dark')}
+          className={cn(
+            'dropdown-menu-item hover:bg-primary-dark',
+            theme === 'custom' && 'hover:[color:white]'
+          )}
+        >
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('custom')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('custom')}
+          className={cn(
+            'dropdown-menu-item hover:bg-primary-dark',
+            theme === 'custom' && 'hover:[color:white]'
+          )}
+        >
           Custom
         </DropdownMenuItem>
       </DropdownMenuContent>

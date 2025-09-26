@@ -149,7 +149,7 @@ body {
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-.custom {
+/* .custom {
   --background: oklch(0.96 0.02 260);
   --foreground: oklch(0.10 0.08 260); 
   --text-base: var(--foreground);
@@ -162,10 +162,29 @@ body {
   --secondary-foreground: oklch(0.98 0.005 260);
   --accent: oklch(0.48 0.25 250);
   --accent-foreground: var(--foreground);
+} */
+
+
+/* globals.css */
+:root.custom {
+  --background: oklch(0.96 0.02 260);
+  --foreground: oklch(0.10 0.08 260);
+  --text-base: var(--foreground);
+  --text-muted: oklch(0.50 0.02 260);
+  --text-heading: oklch(0.05 0.08 260);
+  --text-inverse: oklch(0.98 0.005 260);
+  --primary: oklch(0.45 0.28 250);
+  --primary-foreground: oklch(0.98 0.005 260);
+  --secondary: oklch(0.10 0.02 260);
+  --secondary-foreground: oklch(0.98 0.005 260);
+  --accent: oklch(0.48 0.25 250);
+  --accent-foreground: var(--foreground);
 }
 
-
-
+/* Ensure DropdownMenuItem hover state uses white text in custom theme */
+:root.custom .dropdown-menu-item:hover {
+  color: white; /* or var(--primary-foreground) for consistency */
+}
 /* ---------- Base Layer ---------- */
 @layer base {
   * {

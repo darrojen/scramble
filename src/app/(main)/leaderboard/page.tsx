@@ -139,6 +139,8 @@ export default function Leaderboard() {
         return {
           ...entry,
           avatar_url: avatarUrl || cartoonAvatars[idx % cartoonAvatars.length],
+          rank: idx + 1,
+
         };
       })
     );
@@ -344,36 +346,36 @@ export default function Leaderboard() {
                 <TableBody>
                   {paginatedData.map((entry, idx) => {
                     const rank = startIndex + idx + 1;
-                    const league = entry.total_points >= 27300 ? 'Platinum' :
-                                  entry.total_points >= 13300 ? 'Diamond' :
-                                  entry.total_points >= 5300 ? 'Gold' :
-                                  entry.total_points >= 1300 ? 'Silver' :
-                                  entry.total_points >= 900 ? 'Bronze' : 'Palladium';
-                    const isCurrentUser = entry.student_id === currentUserId;
+                    const league = entry?.total_points >= 27300 ? 'Platinum' :
+                                  entry?.total_points >= 13300 ? 'Diamond' :
+                                  entry?.total_points >= 5300 ? 'Gold' :
+                                  entry?.total_points >= 1300 ? 'Silver' :
+                                  entry?.total_points >= 900 ? 'Bronze' : 'Palladium';
+                    const isCurrentUser = entry?.student_id === currentUserId;
 
                     return (
                       <TableRow
-                        key={entry.student_id}
+                        key={entry?.student_id}
                         className={`cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 ${
                           isCurrentUser ? (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') : ''
                         }`}
-                        onClick={() => router.push(`/users/${entry.student_id}`)}
+                        onClick={() => router.push(`/users/${entry?.student_id}`)}
                       >
                         <TableCell>
                           <div
                             className={`flex items-center justify-center w-8 h-8 rounded-full ${getRankColor(rank)}`}
                           >
-                            {entry.rank || rank}
+                            {entry?.rank || rank}
                           </div>
                         </TableCell>
                         <TableCell className="flex items-center gap-2">
                           <Avatar className="h-8 w-8">
                             <AvatarImage
-                              src={entry.avatar_url || ''}
-                              alt={entry.username ?? ""}
+                              src={entry?.avatar_url || ''}
+                              alt={entry?.username ?? ""}
                             />
                             <AvatarFallback>
-                              {entry.username}
+                              {entry?.username}
                             </AvatarFallback>
                           </Avatar>
                           {entry.username}
