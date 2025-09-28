@@ -94,7 +94,6 @@ async function updateStreak(userId: string) {
         currentStreak = streakData.current_streak + 1;
         streakFreezes -= 1;
       } else if (diffDays === 0) {
-        console.log('Already completed today, no streak update.');
         return { currentStreak: streakData.current_streak, completedToday: false };
       } else {
         currentStreak = 1;
@@ -114,7 +113,6 @@ async function updateStreak(userId: string) {
       });
 
     if (updateError) {
-      console.error('Error updating streak:', updateError.message);
       toast.error('Failed to update streak');
       return { completedToday: false, currentStreak };
     }
@@ -178,7 +176,6 @@ async function updateStreak(userId: string) {
       }
     }
 
-    console.log('Streak updated successfully:', { currentStreak, longestStreak });
     return { currentStreak, completedToday: true };
   } catch (err) {
     console.error('Unexpected error updating streak:', err);
@@ -197,12 +194,12 @@ export default function Quiz() {
     currentIndices,
     setCurrentIndices,
     userAnswers,
-    setUserAnswers,
+    // setUserAnswers,
     examType,
     isStarting,
     calculateScores,
-    setQuestions,
-    setCurrentSubject,
+    // setQuestions,
+    // setCurrentSubject,
   } = useContext(QuizContext);
 
   const router = useRouter();
@@ -241,7 +238,7 @@ export default function Quiz() {
 
   // Clear localStorage on route leave
   useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    const handleBeforeUnload = () => {
       const currentPath = window.location.pathname;
       if (!['/quiz/home', '/quiz/preview'].includes(currentPath)) {
         localStorage.removeItem('quizState');
@@ -260,13 +257,11 @@ export default function Quiz() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden && !isSubmitted) {
-        console.log('Tab hidden, auto-submitting quiz');
         setIsSubmitted(true);
       }
     };
     const handleBlur = () => {
       if (!isSubmitted) {
-        console.log('Window blurred, auto-submitting quiz');
         setIsSubmitted(true);
       }
     };
@@ -464,6 +459,8 @@ export default function Quiz() {
       }
     };
     handleQuizSubmission();
+        // eslint-disable-next-line react-hooks/exhaustive-deps 
+
   }, [isSubmitted, calculateScores, currentSubject, userAnswers, examType, router, setCurrentIndices]);
 
   const jumpToQuestion = (index: number) => {
@@ -511,7 +508,6 @@ export default function Quiz() {
             <Timer
               totalSeconds={totalTime}
               onTimeUp={() => {
-                console.log('Time up, auto-submitting quiz');
                 setIsSubmitted(true);
               }}
             />

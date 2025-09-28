@@ -40,3 +40,11 @@ export interface RawMessage {
   sender?: RawSender[];
 }
 
+export interface LeaderboardEntry {
+  student_id: string;
+  username: string;
+  exam_type: string;
+  total_points: number;
+  rank: number;
+  avatar_url?: string;
+}

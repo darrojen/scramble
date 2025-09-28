@@ -1,3 +1,5 @@
+import Box from "@/components/ui/box";
+
 export interface Reaction {
   emoji: string;
   name: string;
@@ -311,7 +313,7 @@ export const AnimatedEmoji: React.FC<{
 
   if (animation?.type === 'noto') {
     return (
-      <img
+      <Box as="img"
         src={animation.source}
         alt={reaction.name}
         className={className}
@@ -324,7 +326,7 @@ export const AnimatedEmoji: React.FC<{
         }}
         onClick={onClick}
         loading="lazy"
-        onError={(e) => {
+        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
           // Fallback to static emoji if animation fails to load
           const target = e.target as HTMLElement;
           target.innerHTML = emoji;
@@ -335,7 +337,7 @@ export const AnimatedEmoji: React.FC<{
 
   // Fallback to static emoji for non-animated reactions
   return (
-    <span
+    <Box as="span"
       className={className}
       style={{
         fontSize: style?.width || '24px',
@@ -346,7 +348,7 @@ export const AnimatedEmoji: React.FC<{
       onClick={onClick}
     >
       {emoji}
-    </span>
+    </Box>
   );
 };
 

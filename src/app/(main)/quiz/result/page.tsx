@@ -210,7 +210,6 @@ export default function Result() {
           .select('current_streak, longest_streak')
           .eq('user_id', user.id)
           .maybeSingle();
-
         if (streakError || !streakData) {
           console.error('Streak query error:', streakError?.message);
           setStreak({ current_streak: 0, longest_streak: 0 });
@@ -430,7 +429,7 @@ export default function Result() {
                     ) : (
                       <>
                         {streak?.current_streak || 0} day{streak?.current_streak !== 1 ? 's' : ''}
-                        {streak?.current_streak && streak.current_streak > 5 ? ' 🔥' : ''}
+                        {streak?.current_streak && streak.current_streak > 6 ? ' 🔥' : ''}
                       </>
                     )}
                   </p>
