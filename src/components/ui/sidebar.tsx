@@ -279,6 +279,8 @@ function SidebarTrigger({
   )
 }
 
+
+
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar()
 
@@ -510,7 +512,13 @@ function SidebarMenuButton({
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? Slot : "button"
-  const { isMobile, state } = useSidebar()
+  const { isMobile, state , toggleSidebar} = useSidebar()
+  if (isMobile) {
+  props.onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    toggleSidebar();
+    props.onClick?.(e);
+  };
+}
 
   const button = (
     <Comp

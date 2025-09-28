@@ -591,12 +591,12 @@ export default function QuizForm({ route, examType, onBack }: QuizFormProps) {
       ? 4
       : Infinity;
 
-  const availableSubjects =
-    route === 'science'
-      ? scienceSubjects
-      : route === 'arts'
-      ? artsSubjects
-      : [...scienceSubjects, ...artsSubjects];
+  // const availableSubjects =
+  //   route === 'science'
+  //     ? scienceSubjects
+  //     : route === 'arts'
+  //     ? artsSubjects
+  //     : [...scienceSubjects, ...artsSubjects];
 
   const handleSubjectChange = (sub: string, checked: boolean) => {
     if (examType === 'JAMB' && sub === 'english' && !checked) {

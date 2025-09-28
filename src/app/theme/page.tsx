@@ -44,7 +44,7 @@ export default function ModeToggle() {
   };
 
   // Base classes for the button
-  const buttonClasses = cn(
+   const buttonClasses = cn(
     'top-[20px] z-[1000] cursor-pointer right-[20px] fixed',
     // Default hover (non-custom theme)
     'hover:text-primary-dark',

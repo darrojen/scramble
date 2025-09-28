@@ -197,7 +197,7 @@ export default function UserProfilePage() {
 
   return (
     <div
-      className={`min-h-screen max-h-[100vh] p-4 sm:p-6 lg:p-8 ${
+      className={`min-h-screen max-h-[fit-content] p-4 sm:p-6 lg:p-8 ${
         theme === 'dark'
           ? 'bg-gray-900 text-gray-100'
           : 'bg-gray-50 text-gray-900'
