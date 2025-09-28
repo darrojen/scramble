@@ -34,12 +34,12 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
     <Box className="flex min-h-screen">
       <Sidebar /> 
       {/* prevent sidebar from shrinking */}
-      {/* <SidebarTrigger className='absolute top-[15] left-[15px] z-50 sm:w-10 sm:h-10'/> */}
+      <SidebarTrigger className='relative'/>
       <Box
         as="main"
         className="flex-1 flex flex-col transition-all duration-300" // flex-1 fills remaining space
       >
-              <SidebarTrigger size="icon" className='absolute'/>
+              {/* <SidebarTrigger size="icon" className='absolute'/> */}
 
 
         {/* Main content */}
